@@ -3,7 +3,6 @@ package spieler.enheth;
 import spieler.Zug;
 
 import java.util.ArrayDeque;
-import java.util.List;
 
 public class Spielbaum {
 

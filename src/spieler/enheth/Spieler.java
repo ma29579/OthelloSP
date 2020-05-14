@@ -30,6 +30,7 @@ public class Spieler implements OthelloSpieler {
         brett = new Spielbrett();
 
         //Spielbaum anlegen initialisieren
+
     }
 
     @Override
