@@ -178,6 +178,40 @@ public class Spielbrett {
         return moeglicheZuege;
     }
 
+    //Bewertet einen übergebenen Zug, anhand der Feldverteilung der Spielfarben
+    public int zugBewerten(Zug input, Farbe zugFarbe) {
+
+        Farbe spielbrettKopie[][] = new Farbe[8][8];
+        int schwarz = 0;
+        int weiss = 0;
+
+        //Kopiervorgang des eigentlichen Spielbretts
+        for (int zeile = 0; zeile < 8; zeile++) {
+            for (int spalte = 0; spalte < 8; spalte++) {
+                spielbrettKopie[zeile][spalte] = this.spielbrett[zeile][spalte];
+            }
+        }
+
+        //Durchführung des Zugs innerhalb der Spielbrettkopie
+        this.spielfeldVeraendernNachZug(input, zugFarbe, spielbrettKopie);
+
+        //Zählung der existierenden Spielsteine
+        for (int zeile = 0; zeile < 8; zeile++) {
+            for (int spalte = 0; spalte < 8; spalte++) {
+                if (spielbrettKopie[zeile][spalte] == Farbe.SCHWARZ)
+                    schwarz++;
+                else if (spielbrettKopie[zeile][spalte] == Farbe.WEISS)
+                    weiss++;
+            }
+        }
+
+        if (zugFarbe == Farbe.SCHWARZ)
+            return schwarz - weiss;
+        else
+            return weiss - schwarz;
+
+    }
+
     public void spielbrettAusgeben() {
 
         for (int i = 0; i < 8; i++) {
@@ -197,18 +231,24 @@ public class Spielbrett {
 
     public void zugAusfuehren(Zug input, Farbe zugFarbe) {
 
-        spielbrett[input.getZeile()][input.getSpalte()] = zugFarbe;
+        spielfeldVeraendernNachZug(input, zugFarbe, this.spielbrett);
+
+    }
+
+    private void spielfeldVeraendernNachZug(Zug input, Farbe zugFarbe, Farbe zuVeraenderndesSpielbrett[][]) {
+
+        zuVeraenderndesSpielbrett[input.getZeile()][input.getSpalte()] = zugFarbe;
 
         //vertikal nach unten
         for (int zeile = input.getZeile() + 1; zeile < 8; zeile++) {
 
-            if (spielbrett[zeile][input.getSpalte()] == Farbe.LEER)
+            if (zuVeraenderndesSpielbrett[zeile][input.getSpalte()] == Farbe.LEER)
                 break;
 
-            if (spielbrett[zeile][input.getSpalte()] == zugFarbe) {
+            if (zuVeraenderndesSpielbrett[zeile][input.getSpalte()] == zugFarbe) {
 
                 for (int i = input.getZeile(); i <= zeile; i++) {
-                    spielbrett[i][input.getSpalte()] = zugFarbe;
+                    zuVeraenderndesSpielbrett[i][input.getSpalte()] = zugFarbe;
                 }
 
                 break;
@@ -219,13 +259,13 @@ public class Spielbrett {
         //vertikal nach oben
         for (int zeile = input.getZeile() - 1; zeile >= 0; zeile--) {
 
-            if (spielbrett[zeile][input.getSpalte()] == Farbe.LEER)
+            if (zuVeraenderndesSpielbrett[zeile][input.getSpalte()] == Farbe.LEER)
                 break;
 
-            if (spielbrett[zeile][input.getSpalte()] == zugFarbe) {
+            if (zuVeraenderndesSpielbrett[zeile][input.getSpalte()] == zugFarbe) {
 
                 for (int i = input.getZeile(); i >= zeile; i--) {
-                    spielbrett[i][input.getSpalte()] = zugFarbe;
+                    zuVeraenderndesSpielbrett[i][input.getSpalte()] = zugFarbe;
                 }
 
                 break;
@@ -236,13 +276,13 @@ public class Spielbrett {
         //horizontal nach links
         for (int spalte = input.getSpalte() - 1; spalte >= 0; spalte--) {
 
-            if (spielbrett[input.getZeile()][spalte] == Farbe.LEER)
+            if (zuVeraenderndesSpielbrett[input.getZeile()][spalte] == Farbe.LEER)
                 break;
 
-            if (spielbrett[input.getZeile()][spalte] == zugFarbe) {
+            if (zuVeraenderndesSpielbrett[input.getZeile()][spalte] == zugFarbe) {
 
                 for (int i = input.getSpalte(); i >= spalte; i--) {
-                    spielbrett[input.getZeile()][i] = zugFarbe;
+                    zuVeraenderndesSpielbrett[input.getZeile()][i] = zugFarbe;
                 }
 
                 break;
@@ -254,13 +294,13 @@ public class Spielbrett {
         //horizontal nach rechts
         for (int spalte = input.getSpalte() + 1; spalte < 8; spalte++) {
 
-            if (spielbrett[input.getZeile()][spalte] == Farbe.LEER)
+            if (zuVeraenderndesSpielbrett[input.getZeile()][spalte] == Farbe.LEER)
                 break;
 
-            if (spielbrett[input.getZeile()][spalte] == zugFarbe) {
+            if (zuVeraenderndesSpielbrett[input.getZeile()][spalte] == zugFarbe) {
 
                 for (int i = input.getSpalte(); i <= spalte; i++) {
-                    spielbrett[input.getZeile()][i] = zugFarbe;
+                    zuVeraenderndesSpielbrett[input.getZeile()][i] = zugFarbe;
                 }
 
                 break;
@@ -270,13 +310,13 @@ public class Spielbrett {
         //Diagonal nach unten rechts
         for (int zeile = input.getZeile() + 1, spalte = input.getSpalte() + 1; zeile < 8 && spalte < 8; zeile++, spalte++) {
 
-            if (spielbrett[zeile][spalte] == Farbe.LEER)
+            if (zuVeraenderndesSpielbrett[zeile][spalte] == Farbe.LEER)
                 break;
 
-            if (spielbrett[zeile][spalte] == zugFarbe) {
+            if (zuVeraenderndesSpielbrett[zeile][spalte] == zugFarbe) {
 
                 for (int i = input.getZeile(), j = input.getSpalte(); i <= zeile && j <= spalte; i++, j++) {
-                    spielbrett[i][j] = zugFarbe;
+                    zuVeraenderndesSpielbrett[i][j] = zugFarbe;
                 }
 
                 break;
@@ -287,13 +327,13 @@ public class Spielbrett {
         //Diagonal nach unten links
         for (int zeile = input.getZeile() + 1, spalte = input.getSpalte() - 1; zeile < 8 && spalte >= 0; zeile++, spalte--) {
 
-            if (spielbrett[zeile][spalte] == Farbe.LEER)
+            if (zuVeraenderndesSpielbrett[zeile][spalte] == Farbe.LEER)
                 break;
 
-            if (spielbrett[zeile][spalte] == zugFarbe) {
+            if (zuVeraenderndesSpielbrett[zeile][spalte] == zugFarbe) {
 
                 for (int i = input.getZeile(), j = input.getSpalte(); i <= zeile && j >= spalte; i++, j--) {
-                    spielbrett[i][j] = zugFarbe;
+                    zuVeraenderndesSpielbrett[i][j] = zugFarbe;
                 }
 
                 break;
@@ -304,13 +344,13 @@ public class Spielbrett {
         //Diagonal nach oben links
         for (int zeile = input.getZeile() - 1, spalte = input.getSpalte() - 1; zeile >= 0 && spalte >= 0; zeile--, spalte--) {
 
-            if (spielbrett[zeile][spalte] == Farbe.LEER)
+            if (zuVeraenderndesSpielbrett[zeile][spalte] == Farbe.LEER)
                 break;
 
-            if (spielbrett[zeile][spalte] == zugFarbe) {
+            if (zuVeraenderndesSpielbrett[zeile][spalte] == zugFarbe) {
 
                 for (int i = input.getZeile(), j = input.getSpalte(); i >= zeile && j >= spalte; i--, j--) {
-                    spielbrett[i][j] = zugFarbe;
+                    zuVeraenderndesSpielbrett[i][j] = zugFarbe;
                 }
 
                 break;
@@ -321,13 +361,13 @@ public class Spielbrett {
         //Diagonal nach oben rechts
         for (int zeile = input.getZeile() - 1, spalte = input.getSpalte() + 1; zeile >= 0 && spalte < 8; zeile--, spalte++) {
 
-            if (spielbrett[zeile][spalte] == Farbe.LEER)
+            if (zuVeraenderndesSpielbrett[zeile][spalte] == Farbe.LEER)
                 break;
 
-            if (spielbrett[zeile][spalte] == zugFarbe) {
+            if (zuVeraenderndesSpielbrett[zeile][spalte] == zugFarbe) {
 
                 for (int i = input.getZeile(), j = input.getSpalte(); i >= 0 && j >= spalte; i--, j++) {
-                    spielbrett[i][j] = zugFarbe;
+                    zuVeraenderndesSpielbrett[i][j] = zugFarbe;
                 }
 
                 break;

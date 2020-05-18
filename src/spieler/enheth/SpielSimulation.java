@@ -23,7 +23,9 @@ public class SpielSimulation {
         tmp.zugAusfuehren(zuege.get(0),Farbe.SCHWARZ);
         tmp.spielbrettAusgeben();
         zuege= tmp.sucheAlleMoeglichenZuge(Farbe.SCHWARZ);
-        int i = 0;
+        tmp.zugBewerten(zuege.get(1),Farbe.SCHWARZ);
+        System.out.println("");
+        tmp.spielbrettAusgeben();
 
 
         //new OthelloArena(150,spieler,true);
