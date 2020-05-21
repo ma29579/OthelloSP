@@ -28,4 +28,12 @@ public class Spielbaum {
 
         return null;
     }
+
+    public void kindKnotenHinzufuegen(Knoten k){
+        this.wurzel.kindKnotenHinzufuegen(k);
+    }
+
+    public Knoten getWurzel(){
+        return wurzel;
+    }
 }

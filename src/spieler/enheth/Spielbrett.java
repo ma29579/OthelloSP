@@ -26,6 +26,29 @@ public class Spielbrett {
         spielbrett[4][4] = Farbe.WEISS;
     }
 
+    public static Farbe gegenteilFarbe(Farbe f){
+        if(f == Farbe.SCHWARZ)
+            return Farbe.WEISS;
+        else
+            return Farbe.SCHWARZ;
+    }
+
+    public Spielbrett brettSimulationBereitstellen(Zug z, Farbe f){
+
+        Spielbrett ergebnis = new Spielbrett();
+
+        //Zählung der existierenden Spielsteine
+        for (int zeile = 0; zeile < 8; zeile++) {
+            for (int spalte = 0; spalte < 8; spalte++) {
+                ergebnis.spielbrett[zeile][spalte] = this.spielbrett[zeile][spalte];
+            }
+        }
+        ergebnis.zugAusfuehren(z,f);
+
+        return ergebnis;
+    }
+
+
     public ArrayList<Zug> sucheAlleMoeglichenZuge(Farbe zugFarbe) {
 
         ArrayList<Zug> moeglicheZuege = new ArrayList<Zug>();
