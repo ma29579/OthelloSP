@@ -198,6 +198,7 @@ public class Spielbrett {
             }
         }
 
+
         return moeglicheZuege;
     }
 

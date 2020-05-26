@@ -27,6 +27,10 @@ public class Knoten {
         this.spielbrett = brett;
     }
 
+    public Knoten getElternKnoten() {
+        return elternKnoten;
+    }
+
     public Spielbrett getSpielbrett(){
         return spielbrett;
     }

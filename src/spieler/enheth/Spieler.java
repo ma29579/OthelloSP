@@ -6,6 +6,8 @@ import spieler.Zug;
 import spieler.ZugException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Spieler implements OthelloSpieler {
 
@@ -36,8 +38,8 @@ public class Spieler implements OthelloSpieler {
             lezteFarbe = gegnerischeFarbe;
         }
 
+        //Konstruktion des Spielbaums
         spielbaum = new Spielbaum(new Knoten(zug, this.brett));
-
         letzteEbene.add(spielbaum.getWurzel());
 
         for (int aktuelleTiefe = 1; aktuelleTiefe <= tiefe; aktuelleTiefe++) {
@@ -51,7 +53,7 @@ public class Spieler implements OthelloSpieler {
                 ArrayList<Zug> moeglicheZuege = k.getSpielbrett().sucheAlleMoeglichenZuge(aktuelleSpielzugfarbe);
                 letzteEbene.remove(k);
 
-                for(Zug aktuellerZug : moeglicheZuege){
+                for (Zug aktuellerZug : moeglicheZuege) {
 
                     Knoten neuerKindknoten = new Knoten(aktuellerZug, this.brett.brettSimulationBereitstellen(aktuellerZug, aktuelleSpielzugfarbe));
                     k.kindKnotenHinzufuegen(neuerKindknoten);
@@ -61,12 +63,79 @@ public class Spieler implements OthelloSpieler {
 
         }
 
+        //Bewertung der letzten Ebene des Spielbaums
         for (Knoten k : letzteEbene) {
             Spielbrett aktuellesBrett = k.getSpielbrett();
             k.setBewertung(aktuellesBrett.zugBewerten(k.getSpielzug(), eigeneFarbe));
         }
 
-        int i = 0;
+        //Anwendung des Minimax-Algorithmus
+        Set<Knoten> elternEbene = new HashSet<Knoten>();
+        ArrayList<Knoten> kindEbene = new ArrayList<>(letzteEbene);
+        int bedingung = 0;
+
+        while (!elternEbene.contains(spielbaum.getWurzel())) {
+
+            elternEbene.clear();
+
+            //Hinzufügen aller Elterknoten, von Knoten in der aktuell betrachteten Ebene
+            for (Knoten k : kindEbene) {
+                elternEbene.add(k.getElternKnoten());
+            }
+
+            for (Knoten k : elternEbene) {
+
+                ArrayList<Knoten> kindKnoten = k.getKindKnoten();
+
+                //Maximieren
+                if (bedingung % 2 == 0) {
+
+                    if (kindKnoten.size() > 1) {
+
+                        int bewertung = kindKnoten.get(0).getBewertung();
+
+                        for (int i = 1; i < kindKnoten.size(); i++) {
+                            if (bewertung < kindKnoten.get(i).getBewertung())
+                                bewertung = kindKnoten.get(i).getBewertung();
+                        }
+
+                        k.setBewertung(bewertung);
+
+                    } else {
+
+                        k.setBewertung(kindKnoten.get(0).getBewertung());
+
+                    }
+
+                }
+                //Minimieren
+                else {
+
+                    if (kindKnoten.size() > 1) {
+
+                        int bewertung = kindKnoten.get(0).getBewertung();
+
+                        for (int i = 1; i < kindKnoten.size(); i++) {
+                            if (bewertung > kindKnoten.get(i).getBewertung())
+                                bewertung = kindKnoten.get(i).getBewertung();
+                        }
+
+                        k.setBewertung(bewertung);
+
+                    } else {
+
+                        k.setBewertung(kindKnoten.get(0).getBewertung());
+
+                    }
+
+                }
+
+            }
+
+            bedingung++;
+            kindEbene.clear();
+            kindEbene.addAll(elternEbene);
+        }
 
         return null;
     }
