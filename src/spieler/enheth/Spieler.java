@@ -83,6 +83,7 @@ public class Spieler implements OthelloSpieler {
                 elternEbene.add(k.getElternKnoten());
             }
 
+            //Betrachtung aller Kindknoten und Bewertung der dazugehörigen Elternknoten
             for (Knoten k : elternEbene) {
 
                 ArrayList<Knoten> kindKnoten = k.getKindKnoten();
@@ -132,8 +133,11 @@ public class Spieler implements OthelloSpieler {
 
             }
 
+            //Inkrement der betrachteten Ebene
             bedingung++;
+            //Bisherige Liste der Kindknoten wird geleert
             kindEbene.clear();
+            //Bei den neuen Kindknoten handelt es sich nun um die vorherigen ElternknotenK
             kindEbene.addAll(elternEbene);
         }
 
