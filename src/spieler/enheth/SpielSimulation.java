@@ -2,6 +2,7 @@ package spieler.enheth;
 
 import rahmen.OthelloArena;
 import spieler.OthelloSpieler;
+import spieler.Zug;
 
 import java.util.ArrayList;
 
@@ -14,8 +15,6 @@ public class SpielSimulation {
         spieler.add(new Spieler());
 
         new OthelloArena(150, spieler, true);
-
-
     }
 
 }

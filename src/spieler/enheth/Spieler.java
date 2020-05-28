@@ -15,7 +15,7 @@ public class Spieler implements OthelloSpieler {
     private Spielbrett brett;
     private Farbe eigeneFarbe;
     private Farbe gegnerischeFarbe;
-    private int tiefe = 4;
+    private int tiefe = 2;
 
     //Standardkonstruktor
     Spieler() {
@@ -74,7 +74,7 @@ public class Spieler implements OthelloSpieler {
         ArrayList<Knoten> kindEbene = new ArrayList<>(letzteEbene);
         int bedingung = 0;
 
-        while (!elternEbene.contains(spielbaum.getWurzel())) {
+        while (!elternEbene.contains(spielbaum.getWurzel()) && kindEbene.size() > 0) {
 
             elternEbene.clear();
 
@@ -151,8 +151,9 @@ public class Spieler implements OthelloSpieler {
         if (besterZug != null) {
             this.brett.zugAusfuehren(besterZug, eigeneFarbe);
             return besterZug;
-        }
-        else {
+        } else {
+            besterZug = new Zug(1,1);
+            besterZug.setPassen();
             return besterZug;
         }
     }

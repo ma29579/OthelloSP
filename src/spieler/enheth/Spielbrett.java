@@ -55,10 +55,6 @@ public class Spielbrett {
 
         boolean spielsteinFremdeFarbe = false;
 
-        System.out.println("-----------");
-        this.spielbrettAusgeben();
-        System.out.println("-----------");
-
         for (int zeile = 0; zeile < 8; zeile++) {
             for (int spalte = 0; spalte < 8; spalte++) {
 
