@@ -15,7 +15,7 @@ public class Spieler implements OthelloSpieler {
     private Spielbrett brett;
     private Farbe eigeneFarbe;
     private Farbe gegnerischeFarbe;
-    private int tiefe = 3;
+    private int tiefe = 4;
 
     //Standardkonstruktor
     Spieler() {
@@ -55,7 +55,7 @@ public class Spieler implements OthelloSpieler {
 
                 for (Zug aktuellerZug : moeglicheZuege) {
 
-                    Knoten neuerKindknoten = new Knoten(aktuellerZug, this.brett.brettSimulationBereitstellen(aktuellerZug, aktuelleSpielzugfarbe));
+                    Knoten neuerKindknoten = new Knoten(aktuellerZug, k.getSpielbrett().brettSimulationBereitstellen(aktuellerZug, aktuelleSpielzugfarbe));
                     k.kindKnotenHinzufuegen(neuerKindknoten);
                     letzteEbene.add(neuerKindknoten);
                 }
@@ -72,7 +72,7 @@ public class Spieler implements OthelloSpieler {
         //Anwendung des Minimax-Algorithmus
         Set<Knoten> elternEbene = new HashSet<Knoten>();
         ArrayList<Knoten> kindEbene = new ArrayList<>(letzteEbene);
-        int bedingung = 1;
+        int bedingung = 0;
 
         while (!elternEbene.contains(spielbaum.getWurzel())) {
 
@@ -137,13 +137,24 @@ public class Spieler implements OthelloSpieler {
             bedingung++;
             //Bisherige Liste der Kindknoten wird geleert
             kindEbene.clear();
-            //Bei den neuen Kindknoten handelt es sich nun um die vorherigen ElternknotenK
+            //Bei den neuen Kindknoten handelt es sich nun um die vorherigen Elternknoten
             kindEbene.addAll(elternEbene);
         }
 
-        int i = 0;
+        Zug besterZug = null;
 
-        return null;
+        for (Knoten k : spielbaum.getWurzel().getKindKnoten()) {
+            if (k.getBewertung() == spielbaum.getWurzel().getBewertung())
+                besterZug = k.getSpielzug();
+        }
+
+        if (besterZug != null) {
+            this.brett.zugAusfuehren(besterZug, eigeneFarbe);
+            return besterZug;
+        }
+        else {
+            return besterZug;
+        }
     }
 
     @Override

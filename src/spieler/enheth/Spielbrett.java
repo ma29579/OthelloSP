@@ -26,14 +26,14 @@ public class Spielbrett {
         spielbrett[4][4] = Farbe.WEISS;
     }
 
-    public static Farbe gegenteilFarbe(Farbe f){
-        if(f == Farbe.SCHWARZ)
+    public static Farbe gegenteilFarbe(Farbe f) {
+        if (f == Farbe.SCHWARZ)
             return Farbe.WEISS;
         else
             return Farbe.SCHWARZ;
     }
 
-    public Spielbrett brettSimulationBereitstellen(Zug z, Farbe f){
+    public Spielbrett brettSimulationBereitstellen(Zug z, Farbe f) {
 
         Spielbrett ergebnis = new Spielbrett();
 
@@ -43,7 +43,7 @@ public class Spielbrett {
                 ergebnis.spielbrett[zeile][spalte] = this.spielbrett[zeile][spalte];
             }
         }
-        ergebnis.zugAusfuehren(z,f);
+        ergebnis.zugAusfuehren(z, f);
 
         return ergebnis;
     }
@@ -54,6 +54,10 @@ public class Spielbrett {
         ArrayList<Zug> moeglicheZuege = new ArrayList<Zug>();
 
         boolean spielsteinFremdeFarbe = false;
+
+        System.out.println("-----------");
+        this.spielbrettAusgeben();
+        System.out.println("-----------");
 
         for (int zeile = 0; zeile < 8; zeile++) {
             for (int spalte = 0; spalte < 8; spalte++) {
@@ -162,7 +166,6 @@ public class Spielbrett {
 
                 spielsteinFremdeFarbe = false;
 
-
                 //Überprüfung, diagonal nach oben rechts
                 for (int i = zeile - 1, j = spalte + 1; i >= 0 && j < 8 && spielbrett[i][j] != Farbe.LEER; i--, j++) {
                     if (spielbrett[i][j] != zugFarbe)
@@ -198,8 +201,6 @@ public class Spielbrett {
             }
         }
 
-        this.spielbrettAusgeben();
-        System.out.println("__________________");
         return moeglicheZuege;
     }
 
@@ -233,9 +234,9 @@ public class Spielbrett {
                 if (spielbrett[i][j] == Farbe.LEER)
                     System.out.print(" - ");
                 else if (spielbrett[i][j] == Farbe.WEISS)
-                    System.out.print(" 🟤 ");
+                    System.out.print(" W ");
                 else
-                    System.out.print(" 🟡 ");
+                    System.out.print(" S ");
             }
 
             System.out.println("");
@@ -380,7 +381,7 @@ public class Spielbrett {
 
             if (zuVeraenderndesSpielbrett[zeile][spalte] == zugFarbe) {
 
-                for (int i = input.getZeile(), j = input.getSpalte(); i >= 0 && j >= spalte; i--, j++) {
+                for (int i = input.getZeile(), j = input.getSpalte(); i >= 0 && j <= spalte; i--, j++) {
                     zuVeraenderndesSpielbrett[i][j] = zugFarbe;
                 }
 
