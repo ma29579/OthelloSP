@@ -198,33 +198,23 @@ public class Spielbrett {
             }
         }
 
-
+        this.spielbrettAusgeben();
+        System.out.println("__________________");
         return moeglicheZuege;
     }
 
     //Bewertet einen übergebenen Zug, anhand der Feldverteilung der Spielfarben
-    public int zugBewerten(Zug input, Farbe zugFarbe) {
+    public int brettBewerten(Zug input, Farbe zugFarbe) {
 
-        Farbe spielbrettKopie[][] = new Farbe[8][8];
         int schwarz = 0;
         int weiss = 0;
-
-        //Kopiervorgang des eigentlichen Spielbretts
-        for (int zeile = 0; zeile < 8; zeile++) {
-            for (int spalte = 0; spalte < 8; spalte++) {
-                spielbrettKopie[zeile][spalte] = this.spielbrett[zeile][spalte];
-            }
-        }
-
-        //Durchführung des Zugs innerhalb der Spielbrettkopie
-        this.spielfeldVeraendernNachZug(input, zugFarbe, spielbrettKopie);
 
         //Zählung der existierenden Spielsteine
         for (int zeile = 0; zeile < 8; zeile++) {
             for (int spalte = 0; spalte < 8; spalte++) {
-                if (spielbrettKopie[zeile][spalte] == Farbe.SCHWARZ)
+                if (spielbrett[zeile][spalte] == Farbe.SCHWARZ)
                     schwarz++;
-                else if (spielbrettKopie[zeile][spalte] == Farbe.WEISS)
+                else if (spielbrett[zeile][spalte] == Farbe.WEISS)
                     weiss++;
             }
         }

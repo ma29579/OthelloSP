@@ -15,7 +15,7 @@ public class Spieler implements OthelloSpieler {
     private Spielbrett brett;
     private Farbe eigeneFarbe;
     private Farbe gegnerischeFarbe;
-    private int tiefe = 4;
+    private int tiefe = 3;
 
     //Standardkonstruktor
     Spieler() {
@@ -66,13 +66,13 @@ public class Spieler implements OthelloSpieler {
         //Bewertung der letzten Ebene des Spielbaums
         for (Knoten k : letzteEbene) {
             Spielbrett aktuellesBrett = k.getSpielbrett();
-            k.setBewertung(aktuellesBrett.zugBewerten(k.getSpielzug(), eigeneFarbe));
+            k.setBewertung(aktuellesBrett.brettBewerten(k.getSpielzug(), eigeneFarbe));
         }
 
         //Anwendung des Minimax-Algorithmus
         Set<Knoten> elternEbene = new HashSet<Knoten>();
         ArrayList<Knoten> kindEbene = new ArrayList<>(letzteEbene);
-        int bedingung = 0;
+        int bedingung = 1;
 
         while (!elternEbene.contains(spielbaum.getWurzel())) {
 
@@ -140,6 +140,8 @@ public class Spieler implements OthelloSpieler {
             //Bei den neuen Kindknoten handelt es sich nun um die vorherigen ElternknotenK
             kindEbene.addAll(elternEbene);
         }
+
+        int i = 0;
 
         return null;
     }
