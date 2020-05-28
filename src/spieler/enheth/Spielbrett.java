@@ -231,11 +231,11 @@ public class Spielbrett {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (spielbrett[i][j] == Farbe.LEER)
-                    System.out.printf(" ❎ ");
+                    System.out.print(" 🟥 ");
                 else if (spielbrett[i][j] == Farbe.WEISS)
-                    System.out.printf(" ⚪ ");
+                    System.out.print(" 🟤 ");
                 else
-                    System.out.printf(" ⚫ ");
+                    System.out.print(" 🟡 ");
             }
 
             System.out.println("");
