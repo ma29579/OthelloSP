@@ -15,7 +15,7 @@ public class Spieler implements OthelloSpieler {
     private Spielbrett brett;
     private Farbe eigeneFarbe;
     private Farbe gegnerischeFarbe;
-    private int tiefe = 2;
+    private int tiefe = 4;
 
     //Standardkonstruktor
     Spieler() {
@@ -32,7 +32,7 @@ public class Spieler implements OthelloSpieler {
         Spielbaum spielbaum;
         Farbe lezteFarbe = eigeneFarbe;
 
-        if (zug != null) {
+        if (zug != null && !zug.getPassen()) {
             //Durchführung des erhaltenen gegnerischen Spielzugs
             brett.zugAusfuehren(zug, gegnerischeFarbe);
             lezteFarbe = gegnerischeFarbe;
