@@ -15,7 +15,8 @@ public class Spieler implements OthelloSpieler {
     private Spielbrett brett;
     private Farbe eigeneFarbe;
     private Farbe gegnerischeFarbe;
-    private int tiefe = 4;
+    private int tiefe = 6;
+    private Zug besterZug;
 
     //Standardkonstruktor
     Spieler() {
@@ -28,9 +29,10 @@ public class Spieler implements OthelloSpieler {
     @Override
     public Zug berechneZug(Zug zug, long l, long l1) throws ZugException {
 
-        ArrayList<Knoten> letzteEbene = new ArrayList<>();
-        Spielbaum spielbaum;
         Farbe lezteFarbe = eigeneFarbe;
+
+        int alpha = Integer.MIN_VALUE;
+        int beta = Integer.MAX_VALUE;
 
         if (zug != null && !zug.getPassen()) {
             //Durchführung des erhaltenen gegnerischen Spielzugs
@@ -38,115 +40,9 @@ public class Spieler implements OthelloSpieler {
             lezteFarbe = gegnerischeFarbe;
         }
 
-        //Konstruktion des Spielbaums
-        spielbaum = new Spielbaum(new Knoten(zug, this.brett));
-        letzteEbene.add(spielbaum.getWurzel());
+        this.besterZug = null;
 
-        for (int aktuelleTiefe = 1; aktuelleTiefe <= tiefe; aktuelleTiefe++) {
-
-            Farbe aktuelleSpielzugfarbe = aktuelleTiefe % 2 == 0 ? gegnerischeFarbe : eigeneFarbe;
-
-            ArrayList<Knoten> tmp = new ArrayList<>(letzteEbene);
-
-            for (Knoten k : tmp) {
-
-                ArrayList<Zug> moeglicheZuege = k.getSpielbrett().sucheAlleMoeglichenZuge(aktuelleSpielzugfarbe);
-                letzteEbene.remove(k);
-
-                for (Zug aktuellerZug : moeglicheZuege) {
-
-                    Knoten neuerKindknoten = new Knoten(aktuellerZug, k.getSpielbrett().brettSimulationBereitstellen(aktuellerZug, aktuelleSpielzugfarbe));
-                    k.kindKnotenHinzufuegen(neuerKindknoten);
-                    letzteEbene.add(neuerKindknoten);
-                }
-            }
-
-        }
-
-        //Bewertung der letzten Ebene des Spielbaums
-        for (Knoten k : letzteEbene) {
-            Spielbrett aktuellesBrett = k.getSpielbrett();
-            k.setBewertung(aktuellesBrett.brettBewerten(k.getSpielzug(), eigeneFarbe));
-        }
-
-        //Anwendung des Minimax-Algorithmus
-        Set<Knoten> elternEbene = new HashSet<Knoten>();
-        ArrayList<Knoten> kindEbene = new ArrayList<>(letzteEbene);
-        int bedingung = 0;
-
-        while (!elternEbene.contains(spielbaum.getWurzel()) && kindEbene.size() > 0) {
-
-            elternEbene.clear();
-
-            //Hinzufügen aller Elterknoten, von Knoten in der aktuell betrachteten Ebene
-            for (Knoten k : kindEbene) {
-                elternEbene.add(k.getElternKnoten());
-            }
-
-            //Betrachtung aller Kindknoten und Bewertung der dazugehörigen Elternknoten
-            for (Knoten k : elternEbene) {
-
-                ArrayList<Knoten> kindKnoten = k.getKindKnoten();
-
-                //Maximieren
-                if (bedingung % 2 == 0) {
-
-                    if (kindKnoten.size() > 1) {
-
-                        int bewertung = kindKnoten.get(0).getBewertung();
-
-                        for (int i = 1; i < kindKnoten.size(); i++) {
-                            if (bewertung < kindKnoten.get(i).getBewertung())
-                                bewertung = kindKnoten.get(i).getBewertung();
-                        }
-
-                        k.setBewertung(bewertung);
-
-                    } else {
-
-                        k.setBewertung(kindKnoten.get(0).getBewertung());
-
-                    }
-
-                }
-                //Minimieren
-                else {
-
-                    if (kindKnoten.size() > 1) {
-
-                        int bewertung = kindKnoten.get(0).getBewertung();
-
-                        for (int i = 1; i < kindKnoten.size(); i++) {
-                            if (bewertung > kindKnoten.get(i).getBewertung())
-                                bewertung = kindKnoten.get(i).getBewertung();
-                        }
-
-                        k.setBewertung(bewertung);
-
-                    } else {
-
-                        k.setBewertung(kindKnoten.get(0).getBewertung());
-
-                    }
-
-                }
-
-            }
-
-            //Inkrement der betrachteten Ebene
-            bedingung++;
-            //Bisherige Liste der Kindknoten wird geleert
-            kindEbene.clear();
-            //Bei den neuen Kindknoten handelt es sich nun um die vorherigen Elternknoten
-            kindEbene.addAll(elternEbene);
-        }
-
-        Zug besterZug = null;
-
-        for (Knoten k : spielbaum.getWurzel().getKindKnoten()) {
-            if (k.getBewertung() == spielbaum.getWurzel().getBewertung())
-                besterZug = k.getSpielzug();
-        }
+        miniMax(eigeneFarbe,tiefe,alpha,beta);
 
         if (besterZug != null) {
             this.brett.zugAusfuehren(besterZug, eigeneFarbe);
@@ -173,6 +69,35 @@ public class Spieler implements OthelloSpieler {
             gegnerischeFarbe = Farbe.SCHWARZ;
         }
 
+    }
+
+    private int miniMax(Farbe zugFarbe, int tiefe, int alpha, int beta){
+
+        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(zugFarbe).size() == 0)
+            return this.brett.brettBewerten(zugFarbe);
+
+        Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
+
+        int maxWert = alpha;
+        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(zugFarbe);
+
+        for(Zug zug : zugListe){
+            this.brett.zugAusfuehren(zug,zugFarbe);
+            int wert = -miniMax(Spielbrett.gegenteilFarbe(zugFarbe),tiefe-1,-beta,-maxWert);
+            this.brett = aktuellesBrett.kopieBereitstellen();
+
+            if(wert > maxWert){
+                maxWert = wert;
+
+                if(tiefe == this.tiefe)
+                    besterZug = zug;
+
+                if(maxWert >= beta)
+                    break;
+            }
+        }
+
+        return maxWert;
     }
 
     @Override

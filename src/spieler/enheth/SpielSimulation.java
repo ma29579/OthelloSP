@@ -13,7 +13,7 @@ public class SpielSimulation {
 
         ArrayList<OthelloSpieler> spieler = new ArrayList<>();
         spieler.add(new Spieler());
-        spieler.add(new Referenzspieler(1));
+        spieler.add(new Referenzspieler());
 
         new OthelloArena(150, spieler, true);
     }

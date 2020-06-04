@@ -8,6 +8,14 @@ import java.util.ArrayList;
 public class Spielbrett {
 
     private Farbe[][] spielbrett;
+    private int[][] bewertungsmatrix = {{50, -20, 10, 5, 5, 10, -20, 50},
+                                        {-20, -30, 1, 1, 1, 1, -30, -20},
+                                        {10, 1, 1, 1, 1, 1, 1, 10},
+                                        {5, 1, 1, 1, 1, 1, 1, 5},
+                                        {5, 1, 1, 1, 1, 1, 1, 5},
+                                        {10, 1, 1, 1, 1, 1, 1, 10},
+                                        {-20, -30, 1, 1, 1, 1, -30, -20},
+                                        {50, -20, 10, 5, 5, 10, -20, 50}};
 
     public Spielbrett() {
 
@@ -24,6 +32,7 @@ public class Spielbrett {
         spielbrett[3][4] = Farbe.SCHWARZ;
         spielbrett[4][3] = Farbe.SCHWARZ;
         spielbrett[4][4] = Farbe.WEISS;
+
     }
 
     public static Farbe gegenteilFarbe(Farbe f) {
@@ -33,7 +42,7 @@ public class Spielbrett {
             return Farbe.SCHWARZ;
     }
 
-    public Spielbrett brettSimulationBereitstellen(Zug z, Farbe f) {
+    public Spielbrett kopieBereitstellen() {
 
         Spielbrett ergebnis = new Spielbrett();
 
@@ -43,7 +52,6 @@ public class Spielbrett {
                 ergebnis.spielbrett[zeile][spalte] = this.spielbrett[zeile][spalte];
             }
         }
-        ergebnis.zugAusfuehren(z, f);
 
         return ergebnis;
     }
@@ -201,7 +209,7 @@ public class Spielbrett {
     }
 
     //Bewertet einen übergebenen Zug, anhand der Feldverteilung der Spielfarben
-    public int brettBewerten(Zug input, Farbe zugFarbe) {
+    public int brettBewerten(Farbe zugFarbe) {
 
         int schwarz = 0;
         int weiss = 0;
@@ -210,9 +218,9 @@ public class Spielbrett {
         for (int zeile = 0; zeile < 8; zeile++) {
             for (int spalte = 0; spalte < 8; spalte++) {
                 if (spielbrett[zeile][spalte] == Farbe.SCHWARZ)
-                    schwarz++;
+                    schwarz+= bewertungsmatrix[zeile][spalte];
                 else if (spielbrett[zeile][spalte] == Farbe.WEISS)
-                    weiss++;
+                    weiss+= bewertungsmatrix[zeile][spalte];
             }
         }
 
