@@ -19,6 +19,7 @@ public class Spieler implements OthelloSpieler {
     private Zug besterZug;
 
     //Standardkonstruktor
+    
     Spieler() {
     }
 

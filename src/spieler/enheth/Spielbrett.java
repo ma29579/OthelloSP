@@ -58,154 +58,155 @@ public class Spielbrett {
 
 
     public ArrayList<Zug> sucheAlleMoeglichenZuge(Farbe zugFarbe) {
-
         ArrayList<Zug> moeglicheZuege = new ArrayList<Zug>();
-
-        boolean spielsteinFremdeFarbe = false;
 
         for (int zeile = 0; zeile < 8; zeile++) {
             for (int spalte = 0; spalte < 8; spalte++) {
-
-                spielsteinFremdeFarbe = false;
-
-                if (spielbrett[zeile][spalte] != Farbe.LEER)
-                    continue;
-
-                //Überprüfung, horizontal rechts
-                for (int j = spalte + 1; j < 8 && spielbrett[zeile][j] != Farbe.LEER; j++) {
-                    if (spielbrett[zeile][j] != zugFarbe)
-                        spielsteinFremdeFarbe = true;
-
-                    if (spielbrett[zeile][j] == zugFarbe) {
-                        if (spielsteinFremdeFarbe)
-                            moeglicheZuege.add(new Zug(zeile, spalte));
-                        else
-                            break;
-                    }
-
+                if(zugErlaubt(zugFarbe, zeile, spalte)){
+                    moeglicheZuege.add(new Zug(zeile, spalte));
                 }
-
-                spielsteinFremdeFarbe = false;
-
-                //Überprüfung, horizontal links
-                for (int j = spalte - 1; j >= 0 && spielbrett[zeile][j] != Farbe.LEER; j--) {
-                    if (spielbrett[zeile][j] != zugFarbe)
-                        spielsteinFremdeFarbe = true;
-
-                    if (spielbrett[zeile][j] == zugFarbe) {
-                        if (spielsteinFremdeFarbe)
-                            moeglicheZuege.add(new Zug(zeile, spalte));
-                        else
-                            break;
-                    }
-
-                }
-
-                spielsteinFremdeFarbe = false;
-
-
-                //Überprüfung, vertikal nach oben
-                for (int i = zeile - 1; i >= 0 && spielbrett[i][spalte] != Farbe.LEER; i--) {
-                    if (spielbrett[i][spalte] != zugFarbe)
-                        spielsteinFremdeFarbe = true;
-
-                    if (spielbrett[i][spalte] == zugFarbe) {
-                        if (spielsteinFremdeFarbe)
-                            moeglicheZuege.add(new Zug(zeile, spalte));
-                        else
-                            break;
-                    }
-
-                }
-
-                spielsteinFremdeFarbe = false;
-
-                //Überprüfung, vertikal nach unten
-                for (int i = zeile + 1; i < 8 && spielbrett[i][spalte] != Farbe.LEER; i++) {
-                    if (spielbrett[i][spalte] != zugFarbe)
-                        spielsteinFremdeFarbe = true;
-
-                    if (spielbrett[i][spalte] == zugFarbe) {
-                        if (spielsteinFremdeFarbe)
-                            moeglicheZuege.add(new Zug(zeile, spalte));
-                        else
-                            break;
-                    }
-
-                }
-
-                spielsteinFremdeFarbe = false;
-
-
-                //Überprüfung, diagonal nach unten rechts
-                for (int i = zeile + 1, j = spalte + 1; i < 8 && j < 8 && spielbrett[i][j] != Farbe.LEER; i++, j++) {
-                    if (spielbrett[i][j] != zugFarbe)
-                        spielsteinFremdeFarbe = true;
-
-                    if (spielbrett[i][j] == zugFarbe) {
-                        if (spielsteinFremdeFarbe)
-                            moeglicheZuege.add(new Zug(zeile, spalte));
-                        else
-                            break;
-                    }
-
-                }
-
-                spielsteinFremdeFarbe = false;
-
-
-                //Überprüfung, diagonal nach unten links
-                for (int i = zeile + 1, j = spalte - 1; i < 8 && j >= 0 && spielbrett[i][j] != Farbe.LEER; i++, j--) {
-                    if (spielbrett[i][j] != zugFarbe)
-                        spielsteinFremdeFarbe = true;
-
-                    if (spielbrett[i][j] == zugFarbe) {
-                        if (spielsteinFremdeFarbe)
-                            moeglicheZuege.add(new Zug(zeile, spalte));
-                        else
-                            break;
-                    }
-
-                }
-
-                spielsteinFremdeFarbe = false;
-
-                //Überprüfung, diagonal nach oben rechts
-                for (int i = zeile - 1, j = spalte + 1; i >= 0 && j < 8 && spielbrett[i][j] != Farbe.LEER; i--, j++) {
-                    if (spielbrett[i][j] != zugFarbe)
-                        spielsteinFremdeFarbe = true;
-
-                    if (spielbrett[i][j] == zugFarbe) {
-                        if (spielsteinFremdeFarbe)
-                            moeglicheZuege.add(new Zug(zeile, spalte));
-                        else
-                            break;
-                    }
-
-                }
-
-                spielsteinFremdeFarbe = false;
-
-                //Überprüfung, diagonal nach oben links
-                for (int i = zeile - 1, j = spalte - 1; i >= 0 && j >= 0 && spielbrett[i][j] != Farbe.LEER; i--, j--) {
-                    if (spielbrett[i][j] != zugFarbe)
-                        spielsteinFremdeFarbe = true;
-
-                    if (spielbrett[i][j] == zugFarbe) {
-                        if (spielsteinFremdeFarbe)
-                            moeglicheZuege.add(new Zug(zeile, spalte));
-                        else
-                            break;
-                    }
-
-                }
-
-                spielsteinFremdeFarbe = false;
-
             }
         }
 
         return moeglicheZuege;
+    }
+
+    private boolean zugErlaubt(Farbe zugFarbe, int zeile, int spalte){
+        boolean spielsteinFremdeFarbe = false;
+
+        if (spielbrett[zeile][spalte] != Farbe.LEER)
+            return false;
+
+        //Überprüfung, horizontal rechts
+        for (int j = spalte + 1; j < 8 && spielbrett[zeile][j] != Farbe.LEER; j++) {
+            if (spielbrett[zeile][j] != zugFarbe)
+                spielsteinFremdeFarbe = true;
+
+            if (spielbrett[zeile][j] == zugFarbe) {
+                if (spielsteinFremdeFarbe)
+                    return true;
+                else
+                    break;
+            }
+
+        }
+
+        spielsteinFremdeFarbe = false;
+
+        //Überprüfung, horizontal links
+        for (int j = spalte - 1; j >= 0 && spielbrett[zeile][j] != Farbe.LEER; j--) {
+            if (spielbrett[zeile][j] != zugFarbe)
+                spielsteinFremdeFarbe = true;
+
+            if (spielbrett[zeile][j] == zugFarbe) {
+                if (spielsteinFremdeFarbe)
+                    return true;
+                else
+                    break;
+            }
+
+        }
+
+        spielsteinFremdeFarbe = false;
+
+
+        //Überprüfung, vertikal nach oben
+        for (int i = zeile - 1; i >= 0 && spielbrett[i][spalte] != Farbe.LEER; i--) {
+            if (spielbrett[i][spalte] != zugFarbe)
+                spielsteinFremdeFarbe = true;
+
+            if (spielbrett[i][spalte] == zugFarbe) {
+                if (spielsteinFremdeFarbe)
+                    return true;
+                else
+                    break;
+            }
+
+        }
+
+        spielsteinFremdeFarbe = false;
+
+        //Überprüfung, vertikal nach unten
+        for (int i = zeile + 1; i < 8 && spielbrett[i][spalte] != Farbe.LEER; i++) {
+            if (spielbrett[i][spalte] != zugFarbe)
+                spielsteinFremdeFarbe = true;
+
+            if (spielbrett[i][spalte] == zugFarbe) {
+                if (spielsteinFremdeFarbe)
+                    return true;
+                else
+                    break;
+            }
+
+        }
+
+        spielsteinFremdeFarbe = false;
+
+
+        //Überprüfung, diagonal nach unten rechts
+        for (int i = zeile + 1, j = spalte + 1; i < 8 && j < 8 && spielbrett[i][j] != Farbe.LEER; i++, j++) {
+            if (spielbrett[i][j] != zugFarbe)
+                spielsteinFremdeFarbe = true;
+
+            if (spielbrett[i][j] == zugFarbe) {
+                if (spielsteinFremdeFarbe)
+                    return true;
+                else
+                    break;
+            }
+
+        }
+
+        spielsteinFremdeFarbe = false;
+
+
+        //Überprüfung, diagonal nach unten links
+        for (int i = zeile + 1, j = spalte - 1; i < 8 && j >= 0 && spielbrett[i][j] != Farbe.LEER; i++, j--) {
+            if (spielbrett[i][j] != zugFarbe)
+                spielsteinFremdeFarbe = true;
+
+            if (spielbrett[i][j] == zugFarbe) {
+                if (spielsteinFremdeFarbe)
+                    return true;
+                else
+                    break;
+            }
+
+        }
+
+        spielsteinFremdeFarbe = false;
+
+        //Überprüfung, diagonal nach oben rechts
+        for (int i = zeile - 1, j = spalte + 1; i >= 0 && j < 8 && spielbrett[i][j] != Farbe.LEER; i--, j++) {
+            if (spielbrett[i][j] != zugFarbe)
+                spielsteinFremdeFarbe = true;
+
+            if (spielbrett[i][j] == zugFarbe) {
+                if (spielsteinFremdeFarbe)
+                    return true;
+                else
+                    break;
+            }
+
+        }
+
+        spielsteinFremdeFarbe = false;
+
+        //Überprüfung, diagonal nach oben links
+        for (int i = zeile - 1, j = spalte - 1; i >= 0 && j >= 0 && spielbrett[i][j] != Farbe.LEER; i--, j--) {
+            if (spielbrett[i][j] != zugFarbe)
+                spielsteinFremdeFarbe = true;
+
+            if (spielbrett[i][j] == zugFarbe) {
+                if (spielsteinFremdeFarbe)
+                    return true;
+                else
+                    break;
+            }
+
+        }
+
+        return false;
     }
 
     //Bewertet einen übergebenen Zug, anhand der Feldverteilung der Spielfarben
@@ -254,8 +255,7 @@ public class Spielbrett {
 
     }
 
-    private void spielfeldVeraendernNachZug(Zug input, Farbe zugFarbe, Farbe zuVeraenderndesSpielbrett[][]) {
-
+    private void spielfeldVeraendernNachZug(Zug input, Farbe zugFarbe, Farbe[][] zuVeraenderndesSpielbrett) {
         zuVeraenderndesSpielbrett[input.getZeile()][input.getSpalte()] = zugFarbe;
 
         //vertikal nach unten
@@ -393,6 +393,5 @@ public class Spielbrett {
             }
 
         }
-
     }
 }
