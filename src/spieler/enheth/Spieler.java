@@ -29,16 +29,12 @@ public class Spieler implements OthelloSpieler {
 
     @Override
     public Zug berechneZug(Zug zug, long l, long l1) throws ZugException {
-
-        Farbe lezteFarbe = eigeneFarbe;
-
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
 
         if (zug != null && !zug.getPassen()) {
             //Durchführung des erhaltenen gegnerischen Spielzugs
             brett.zugAusfuehren(zug, gegnerischeFarbe);
-            lezteFarbe = gegnerischeFarbe;
         }
 
         this.besterZug = null;
@@ -84,7 +80,7 @@ public class Spieler implements OthelloSpieler {
 
         for(Zug zug : zugListe){
             this.brett.zugAusfuehren(zug,zugFarbe);
-            int wert = -miniMax(Spielbrett.gegenteilFarbe(zugFarbe),tiefe-1,-beta,-maxWert);
+            int wert = -miniMax(Spielbrett.gegenteilFarbe(zugFarbe),tiefe-1,-1 * beta,-1 * maxWert);
             this.brett = aktuellesBrett.kopieBereitstellen();
 
             if(wert > maxWert){
@@ -100,6 +96,46 @@ public class Spieler implements OthelloSpieler {
 
         return maxWert;
     }
+
+//    private int alphabetaTest(Farbe zugFarbe, int tiefe, int alpha, int beta){
+//        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(zugFarbe).size() == 0)
+//            return this.brett.brettBewerten(zugFarbe);
+//
+//        int maxWert = 0;
+//
+//        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(zugFarbe);
+//
+//        if(zugFarbe == this.eigeneFarbe){
+//            maxWert = Integer.MIN_VALUE;
+//            for(Zug zug : zugListe){
+//                Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
+//                this.brett.zugAusfuehren(zug,zugFarbe);
+//                int wert = alphabetaTest(Spielbrett.gegenteilFarbe(zugFarbe), tiefe - 1, alpha, beta);
+//                if(wert > maxWert){
+//                    maxWert = wert;
+//                    if(tiefe == this.tiefe)
+//                        besterZug = zug;
+//                }
+//                this.brett = aktuellesBrett.kopieBereitstellen();
+//                alpha = Integer.max(alpha, maxWert);
+//                if(alpha >= beta)
+//                    break;
+//            }
+//            return maxWert;
+//        } else {
+//            maxWert = Integer.MAX_VALUE;
+//            for(Zug zug : zugListe){
+//                Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
+//                this.brett.zugAusfuehren(zug,zugFarbe);
+//                maxWert = Integer.min(maxWert, alphabetaTest(Spielbrett.gegenteilFarbe(zugFarbe), tiefe - 1, alpha, beta));
+//                this.brett = aktuellesBrett.kopieBereitstellen();
+//                beta = Integer.min(beta, maxWert);
+//                if(beta <= alpha)
+//                    break;
+//            }
+//            return maxWert;
+//        }
+//    }
 
     @Override
     public String meinName() {
