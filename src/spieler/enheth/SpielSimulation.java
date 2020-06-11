@@ -20,4 +20,5 @@ public class SpielSimulation {
 
 }
 
-//2320 (1. Runde), 2500 (2.Runde)
+
+// 782 827

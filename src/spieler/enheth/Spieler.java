@@ -67,34 +67,34 @@ public class Spieler implements OthelloSpieler {
 
     }
 
-//    private int miniMax(Farbe zugFarbe, int tiefe, int alpha, int beta){
-//
-//        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(zugFarbe).size() == 0)
-//            return this.brett.brettBewerten(zugFarbe);
-//
-//        Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
-//
-//        int maxWert = alpha;
-//        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(zugFarbe);
-//
-//        for(Zug zug : zugListe){
-//            this.brett.zugAusfuehren(zug,zugFarbe);
-//            int wert = -1 * miniMax(Spielbrett.gegenteilFarbe(zugFarbe),tiefe-1,-1 * beta,-1 * maxWert);
-//            this.brett = aktuellesBrett.kopieBereitstellen();
-//
-//            if(wert > maxWert){
-//                maxWert = wert;
-//
-//                if(tiefe == this.tiefe)
-//                    besterZug = zug;
-//
-//                if(maxWert >= beta)
-//                    break;
-//            }
-//        }
-//
-//        return maxWert;
-//    }
+    private int miniMax(Farbe zugFarbe, int tiefe, int alpha, int beta){
+
+        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(zugFarbe).size() == 0)
+            return this.brett.brettBewerten(zugFarbe);
+
+        Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
+
+        int maxWert = alpha;
+        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(zugFarbe);
+
+        for(Zug zug : zugListe){
+            this.brett.zugAusfuehren(zug,zugFarbe);
+            int wert = -1 * miniMax(Spielbrett.gegenteilFarbe(zugFarbe),tiefe-1,-1 * beta,-1 * maxWert);
+            this.brett = aktuellesBrett.kopieBereitstellen();
+
+            if(wert > maxWert){
+                maxWert = wert;
+
+                if(tiefe == this.tiefe)
+                    besterZug = zug;
+
+                if(maxWert >= beta)
+                    break;
+            }
+        }
+
+        return maxWert;
+    }
 
     private int max(int tiefe, int alpha, int beta){
         if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(this.eigeneFarbe).size() == 0)
