@@ -15,7 +15,7 @@ public class Spieler implements OthelloSpieler {
     private Spielbrett brett;
     private Farbe eigeneFarbe;
     private Farbe gegnerischeFarbe;
-    private int tiefe = 6;
+    private int tiefe = 8;
     private Zug besterZug;
 
     //Standardkonstruktor
@@ -39,7 +39,7 @@ public class Spieler implements OthelloSpieler {
 
         this.besterZug = null;
 
-        miniMax(eigeneFarbe,tiefe,alpha,beta);
+        max(tiefe,Integer.MIN_VALUE,Integer.MAX_VALUE);
 
         if (besterZug != null) {
             this.brett.zugAusfuehren(besterZug, eigeneFarbe);
@@ -68,19 +68,47 @@ public class Spieler implements OthelloSpieler {
 
     }
 
-    private int miniMax(Farbe zugFarbe, int tiefe, int alpha, int beta){
+//    private int miniMax(Farbe zugFarbe, int tiefe, int alpha, int beta){
+//
+//        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(zugFarbe).size() == 0)
+//            return this.brett.brettBewerten(zugFarbe);
+//
+//        Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
+//
+//        int maxWert = alpha;
+//        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(zugFarbe);
+//
+//        for(Zug zug : zugListe){
+//            this.brett.zugAusfuehren(zug,zugFarbe);
+//            int wert = -1 * miniMax(Spielbrett.gegenteilFarbe(zugFarbe),tiefe-1,-1 * beta,-1 * maxWert);
+//            this.brett = aktuellesBrett.kopieBereitstellen();
+//
+//            if(wert > maxWert){
+//                maxWert = wert;
+//
+//                if(tiefe == this.tiefe)
+//                    besterZug = zug;
+//
+//                if(maxWert >= beta)
+//                    break;
+//            }
+//        }
+//
+//        return maxWert;
+//    }
 
-        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(zugFarbe).size() == 0)
-            return this.brett.brettBewerten(zugFarbe);
+    private int max(int tiefe, int alpha, int beta){
+        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(this.eigeneFarbe).size() == 0)
+            return this.brett.brettBewerten(this.eigeneFarbe);
 
         Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
 
         int maxWert = alpha;
-        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(zugFarbe);
 
+        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(this.eigeneFarbe);
         for(Zug zug : zugListe){
-            this.brett.zugAusfuehren(zug,zugFarbe);
-            int wert = -miniMax(Spielbrett.gegenteilFarbe(zugFarbe),tiefe-1,-1 * beta,-1 * maxWert);
+            this.brett.zugAusfuehren(zug, this.eigeneFarbe);
+            int wert = min(tiefe-1, maxWert, beta);
             this.brett = aktuellesBrett.kopieBereitstellen();
 
             if(wert > maxWert){
@@ -93,47 +121,73 @@ public class Spieler implements OthelloSpieler {
                     break;
             }
         }
-
         return maxWert;
     }
+
+    private int min(int tiefe, int alpha, int beta){
+        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(this.gegnerischeFarbe).size() == 0)
+            return this.brett.brettBewerten(this.eigeneFarbe);
+
+        Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
+
+        int minWert = beta;
+
+        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(this.gegnerischeFarbe);
+        for(Zug zug : zugListe){
+            this.brett.zugAusfuehren(zug, this.gegnerischeFarbe);
+            int wert = max(tiefe-1, alpha, minWert);
+            this.brett = aktuellesBrett.kopieBereitstellen();
+
+            if(wert < minWert){
+                minWert = wert;
+
+                if(minWert <= alpha)
+                    break;
+            }
+        }
+        return minWert;
+    }
+
 
 //    private int alphabetaTest(Farbe zugFarbe, int tiefe, int alpha, int beta){
 //        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(zugFarbe).size() == 0)
 //            return this.brett.brettBewerten(zugFarbe);
 //
-//        int maxWert = 0;
-//
+//        Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
 //        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(zugFarbe);
 //
 //        if(zugFarbe == this.eigeneFarbe){
-//            maxWert = Integer.MIN_VALUE;
+//            int maxWert = Integer.MIN_VALUE;
 //            for(Zug zug : zugListe){
-//                Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
 //                this.brett.zugAusfuehren(zug,zugFarbe);
 //                int wert = alphabetaTest(Spielbrett.gegenteilFarbe(zugFarbe), tiefe - 1, alpha, beta);
+//                this.brett = aktuellesBrett.kopieBereitstellen();
+//
 //                if(wert > maxWert){
 //                    maxWert = wert;
 //                    if(tiefe == this.tiefe)
 //                        besterZug = zug;
 //                }
-//                this.brett = aktuellesBrett.kopieBereitstellen();
-//                alpha = Integer.max(alpha, maxWert);
-//                if(alpha >= beta)
-//                    break;
+//
+//                alpha = Math.max(alpha, maxWert);
+////                if(beta <= alpha)
+////                    break;
 //            }
 //            return maxWert;
 //        } else {
-//            maxWert = Integer.MAX_VALUE;
+//            int minWert = Integer.MAX_VALUE;
 //            for(Zug zug : zugListe){
-//                Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
+//
 //                this.brett.zugAusfuehren(zug,zugFarbe);
-//                maxWert = Integer.min(maxWert, alphabetaTest(Spielbrett.gegenteilFarbe(zugFarbe), tiefe - 1, alpha, beta));
+//                int wert = alphabetaTest(Spielbrett.gegenteilFarbe(zugFarbe), tiefe - 1, alpha, beta);
 //                this.brett = aktuellesBrett.kopieBereitstellen();
-//                beta = Integer.min(beta, maxWert);
-//                if(beta <= alpha)
-//                    break;
+//
+//                minWert = Math.min(minWert, wert);
+//                beta = Math.min(beta, minWert);
+////                if(beta <= alpha)
+////                    break;
 //            }
-//            return maxWert;
+//            return minWert;
 //        }
 //    }
 
