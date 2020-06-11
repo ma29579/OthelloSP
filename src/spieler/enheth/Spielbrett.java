@@ -59,16 +59,50 @@ public class Spielbrett {
 
     public ArrayList<Zug> sucheAlleMoeglichenZuge(Farbe zugFarbe) {
         ArrayList<Zug> moeglicheZuege = new ArrayList<Zug>();
+        ArrayList<Zug> guteZuege = new ArrayList<>();
+        ArrayList<Zug> schlechteZuege = new ArrayList<>();
+        ArrayList<Zug> geringBewerteteZuege = new ArrayList<>();
 
         for (int zeile = 0; zeile < 8; zeile++) {
             for (int spalte = 0; spalte < 8; spalte++) {
                 if(zugErlaubt(zugFarbe, zeile, spalte)){
-                    moeglicheZuege.add(new Zug(zeile, spalte));
+                    if(ueberpruefeGutenZug(zeile,spalte))
+                        guteZuege.add(new Zug(zeile,spalte));
+                    else if(ueberpruefeSchlechtenZug(zeile,spalte))
+                        schlechteZuege.add(new Zug(zeile,spalte));
+                    else
+                        geringBewerteteZuege.add(new Zug(zeile,spalte));
                 }
             }
         }
 
+        moeglicheZuege.addAll(guteZuege);
+        moeglicheZuege.addAll(geringBewerteteZuege);
+        moeglicheZuege.addAll(schlechteZuege);
+
         return moeglicheZuege;
+    }
+
+    private boolean ueberpruefeGutenZug(int zeile, int spalte){
+
+        if((zeile == 0 || zeile == 7) && (spalte != 1 || spalte != 6))
+            return true;
+        else if((zeile != 1 || zeile != 6) && (spalte == 0 || spalte == 7))
+            return true;
+        else
+            return false;
+
+    }
+
+    private boolean ueberpruefeSchlechtenZug(int zeile, int spalte){
+
+        if((zeile == 0 || zeile == 7) && (spalte == 1 || spalte == 6))
+            return true;
+        else if((zeile == 1 || zeile == 6) && (spalte < 2 || spalte > 5))
+            return true;
+        else
+            return false;
+
     }
 
     private boolean zugErlaubt(Farbe zugFarbe, int zeile, int spalte){

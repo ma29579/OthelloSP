@@ -13,9 +13,11 @@ public class SpielSimulation {
 
         ArrayList<OthelloSpieler> spieler = new ArrayList<>();
         spieler.add(new Spieler());
-        spieler.add(new Referenzspieler());
+        spieler.add(new Referenzspieler(6));
 
         new OthelloArena(150, spieler, true);
     }
 
 }
+
+//2320 (1. Runde), 2500 (2.Runde)

@@ -6,8 +6,7 @@ import spieler.Zug;
 import spieler.ZugException;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+
 
 public class Spieler implements OthelloSpieler {
 
@@ -15,7 +14,7 @@ public class Spieler implements OthelloSpieler {
     private Spielbrett brett;
     private Farbe eigeneFarbe;
     private Farbe gegnerischeFarbe;
-    private int tiefe = 8;
+    private int tiefe = 6;
     private Zug besterZug;
 
     //Standardkonstruktor
