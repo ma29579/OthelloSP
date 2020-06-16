@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Spielbrett {
 
     private Farbe[][] spielbrett;
+    //Stellt eine Bewertungsvorlage für Spielbrettpositionen da
     private int[][] bewertungsmatrix = {{50, -20, 10, 5, 5, 10, -20, 50},
                                         {-20, -30, 1, 1, 1, 1, -30, -20},
                                         {10, 1, 1, 1, 1, 1, 1, 10},
@@ -17,6 +18,9 @@ public class Spielbrett {
                                         {-20, -30, 1, 1, 1, 1, -30, -20},
                                         {50, -20, 10, 5, 5, 10, -20, 50}};
 
+    /**
+     * Initialisiert ein Spielbrett, mit einer Grundbelegung der Spielsteine
+     */
     public Spielbrett() {
 
         spielbrett = new Farbe[8][8];
@@ -35,13 +39,10 @@ public class Spielbrett {
 
     }
 
-    public static Farbe gegenteilFarbe(Farbe f) {
-        if (f == Farbe.SCHWARZ)
-            return Farbe.WEISS;
-        else
-            return Farbe.SCHWARZ;
-    }
-
+    /**
+     * Instanziiert ein neues Spielbrett-Objekt und kopiert in dieses die aktuelle Spielbrettkonstellation
+     * @return gibt das neu erstellte Spielbrett zurück, dass die kopierte Spielbrettkonstellation enthält.
+     */
     public Spielbrett kopieBereitstellen() {
 
         Spielbrett ergebnis = new Spielbrett();
@@ -56,9 +57,17 @@ public class Spielbrett {
         return ergebnis;
     }
 
-
+    /**
+     * Sucht alle möglichen Züge für die aktuelle Spielbrettkonstelation und führt dabei eine Vorsortierung der Züge durch
+     * Durch die Vorsortierung sollen möglichst früh, viele Cut-Offs erzeugt werden
+     * @param zugFarbe, erwartet die Information, über die aktuelle Zug-Farbe
+     * @return gibt eine ArrayList von Zug-Objekten zurück, die mögliche Züge repräsentieren
+     */
     public ArrayList<Zug> sucheAlleMoeglichenZuge(Farbe zugFarbe) {
+
+        //Speichert die Gesamtheit aller möglichen Züge und wird zurückgegeben
         ArrayList<Zug> moeglicheZuege = new ArrayList<Zug>();
+
         ArrayList<Zug> guteZuege = new ArrayList<>();
         ArrayList<Zug> schlechteZuege = new ArrayList<>();
         ArrayList<Zug> geringBewerteteZuege = new ArrayList<>();
@@ -66,6 +75,7 @@ public class Spielbrett {
         for (int zeile = 0; zeile < 8; zeile++) {
             for (int spalte = 0; spalte < 8; spalte++) {
                 if(zugErlaubt(zugFarbe, zeile, spalte)){
+                    //In Abhängigkeit zu Spielbrettposition wird eine Vorsortierung der Züge durchgeführt
                     if(ueberpruefeGutenZug(zeile,spalte))
                         guteZuege.add(new Zug(zeile,spalte));
                     else if(ueberpruefeSchlechtenZug(zeile,spalte))
@@ -76,6 +86,8 @@ public class Spielbrett {
             }
         }
 
+        //Die gefundenen Züge werden in einer ausgewählten Sortierung in die Ergebnis-ArrayList-Instanz eingeführt
+        //Zunächst folgen die besten Züge, ehe die schlechtesten Züge zu letzt kommen
         moeglicheZuege.addAll(guteZuege);
         moeglicheZuege.addAll(geringBewerteteZuege);
         moeglicheZuege.addAll(schlechteZuege);
@@ -83,17 +95,30 @@ public class Spielbrett {
         return moeglicheZuege;
     }
 
+
+    /**
+     * Überprüft, ob es sich bei der erhaltenen Spielbrettposition, um eine als 'gut'-bewertete Position handelt.
+     * @param zeile, entspricht der Zeile der zu überprüfenden Spielbrett-Position
+     * @param spalte, entspricht der Spalte der zu überprüfenden Spielbrett-Position
+     * @return true, wenn die Spielbrettposition in der Bewertungsmatrix mit mehr als einem Punkt bewertet wird. Andernfalls false
+     */
     private boolean ueberpruefeGutenZug(int zeile, int spalte){
 
-        if((zeile == 0 || zeile == 7) && (spalte != 1 || spalte != 6))
+        if((zeile == 0 || zeile == 7) && (spalte != 1 && spalte != 6))
             return true;
-        else if((zeile != 1 || zeile != 6) && (spalte == 0 || spalte == 7))
+        else if((zeile != 1 && zeile != 6) && (spalte == 0 || spalte == 7))
             return true;
         else
             return false;
 
     }
 
+    /**
+     * Überprüft, ob es sich bei der erhaltenen Spielbrettposition, um eine als 'schlecht'-bewertete Position handelt.
+     * @param zeile, entspricht der Zeile der zu überprüfenden Spielbrett-Position
+     * @param spalte, entspricht der Spalte der zu überprüfenden Spielbrett-Position
+     * @return true, wenn die Spielbrettposition in der Bewertungsmatrix mit weniger als einem Punkt bewertet wird. Andernfalls false
+     */
     private boolean ueberpruefeSchlechtenZug(int zeile, int spalte){
 
         if((zeile == 0 || zeile == 7) && (spalte == 1 || spalte == 6))
@@ -105,6 +130,13 @@ public class Spielbrett {
 
     }
 
+    /**
+     * Überprüft, ob ein Zug erlaubt ist.
+     * @param zugFarbe, repräsentiert die Farbe des zu überprüfenden Zugs
+     * @param zeile, entspricht der Zeile der zu überprüfenden Spielbrett-Position
+     * @param spalte, entspricht der Spalte der zu überprüfenden Spielbrett-Position
+     * @return true, falls der Zug durchführbar ist, andernfalls false
+     */
     private boolean zugErlaubt(Farbe zugFarbe, int zeile, int spalte){
         boolean spielsteinFremdeFarbe = false;
 
@@ -243,7 +275,11 @@ public class Spielbrett {
         return false;
     }
 
-    //Bewertet einen übergebenen Zug, anhand der Feldverteilung der Spielfarben
+    /**
+     * Bewertet die aktuelle Spielsituation auf dem Spielbrett in Verbindung mit der bereitgestellten Bewertungsmatrix
+     * @param zugFarbe, übermittelt die Spieler-Farbe für die Bewertung
+     * @return gibt einen ganzzahligen Wert zurück, der aus der Summe der einzelnen Spielsteinpositionen besteht, die durch die Bewertungsmatrix gewichtet werden
+     */
     public int brettBewerten(Farbe zugFarbe) {
 
         int schwarz = 0;
@@ -266,42 +302,25 @@ public class Spielbrett {
 
     }
 
-    public void spielbrettAusgeben() {
-
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (spielbrett[i][j] == Farbe.LEER)
-                    System.out.print(" - ");
-                else if (spielbrett[i][j] == Farbe.WEISS)
-                    System.out.print(" W ");
-                else
-                    System.out.print(" S ");
-            }
-
-            System.out.println("");
-        }
-
-    }
-
+    /**
+     * Führt einen erhaltenen Zug auf dem aktuellen Spielbrett durch und verändert das Spielbrett dementsprechend
+     * @param input, stellt den anzuwendenden Zug da
+     * @param zugFarbe, übermittelt die Farbe des anzuwendenden zugs
+     */
     public void zugAusfuehren(Zug input, Farbe zugFarbe) {
 
-        spielfeldVeraendernNachZug(input, zugFarbe, this.spielbrett);
-
-    }
-
-    private void spielfeldVeraendernNachZug(Zug input, Farbe zugFarbe, Farbe[][] zuVeraenderndesSpielbrett) {
-        zuVeraenderndesSpielbrett[input.getZeile()][input.getSpalte()] = zugFarbe;
+        this.spielbrett[input.getZeile()][input.getSpalte()] = zugFarbe;
 
         //vertikal nach unten
         for (int zeile = input.getZeile() + 1; zeile < 8; zeile++) {
 
-            if (zuVeraenderndesSpielbrett[zeile][input.getSpalte()] == Farbe.LEER)
+            if (this.spielbrett[zeile][input.getSpalte()] == Farbe.LEER)
                 break;
 
-            if (zuVeraenderndesSpielbrett[zeile][input.getSpalte()] == zugFarbe) {
+            if (this.spielbrett[zeile][input.getSpalte()] == zugFarbe) {
 
                 for (int i = input.getZeile(); i <= zeile; i++) {
-                    zuVeraenderndesSpielbrett[i][input.getSpalte()] = zugFarbe;
+                    this.spielbrett[i][input.getSpalte()] = zugFarbe;
                 }
 
                 break;
@@ -312,13 +331,13 @@ public class Spielbrett {
         //vertikal nach oben
         for (int zeile = input.getZeile() - 1; zeile >= 0; zeile--) {
 
-            if (zuVeraenderndesSpielbrett[zeile][input.getSpalte()] == Farbe.LEER)
+            if (this.spielbrett[zeile][input.getSpalte()] == Farbe.LEER)
                 break;
 
-            if (zuVeraenderndesSpielbrett[zeile][input.getSpalte()] == zugFarbe) {
+            if (this.spielbrett[zeile][input.getSpalte()] == zugFarbe) {
 
                 for (int i = input.getZeile(); i >= zeile; i--) {
-                    zuVeraenderndesSpielbrett[i][input.getSpalte()] = zugFarbe;
+                    this.spielbrett[i][input.getSpalte()] = zugFarbe;
                 }
 
                 break;
@@ -329,13 +348,13 @@ public class Spielbrett {
         //horizontal nach links
         for (int spalte = input.getSpalte() - 1; spalte >= 0; spalte--) {
 
-            if (zuVeraenderndesSpielbrett[input.getZeile()][spalte] == Farbe.LEER)
+            if (this.spielbrett[input.getZeile()][spalte] == Farbe.LEER)
                 break;
 
-            if (zuVeraenderndesSpielbrett[input.getZeile()][spalte] == zugFarbe) {
+            if (this.spielbrett[input.getZeile()][spalte] == zugFarbe) {
 
                 for (int i = input.getSpalte(); i >= spalte; i--) {
-                    zuVeraenderndesSpielbrett[input.getZeile()][i] = zugFarbe;
+                    this.spielbrett[input.getZeile()][i] = zugFarbe;
                 }
 
                 break;
@@ -347,13 +366,13 @@ public class Spielbrett {
         //horizontal nach rechts
         for (int spalte = input.getSpalte() + 1; spalte < 8; spalte++) {
 
-            if (zuVeraenderndesSpielbrett[input.getZeile()][spalte] == Farbe.LEER)
+            if (this.spielbrett[input.getZeile()][spalte] == Farbe.LEER)
                 break;
 
-            if (zuVeraenderndesSpielbrett[input.getZeile()][spalte] == zugFarbe) {
+            if (this.spielbrett[input.getZeile()][spalte] == zugFarbe) {
 
                 for (int i = input.getSpalte(); i <= spalte; i++) {
-                    zuVeraenderndesSpielbrett[input.getZeile()][i] = zugFarbe;
+                    this.spielbrett[input.getZeile()][i] = zugFarbe;
                 }
 
                 break;
@@ -363,13 +382,13 @@ public class Spielbrett {
         //Diagonal nach unten rechts
         for (int zeile = input.getZeile() + 1, spalte = input.getSpalte() + 1; zeile < 8 && spalte < 8; zeile++, spalte++) {
 
-            if (zuVeraenderndesSpielbrett[zeile][spalte] == Farbe.LEER)
+            if (this.spielbrett[zeile][spalte] == Farbe.LEER)
                 break;
 
-            if (zuVeraenderndesSpielbrett[zeile][spalte] == zugFarbe) {
+            if (this.spielbrett[zeile][spalte] == zugFarbe) {
 
                 for (int i = input.getZeile(), j = input.getSpalte(); i <= zeile && j <= spalte; i++, j++) {
-                    zuVeraenderndesSpielbrett[i][j] = zugFarbe;
+                    this.spielbrett[i][j] = zugFarbe;
                 }
 
                 break;
@@ -380,13 +399,13 @@ public class Spielbrett {
         //Diagonal nach unten links
         for (int zeile = input.getZeile() + 1, spalte = input.getSpalte() - 1; zeile < 8 && spalte >= 0; zeile++, spalte--) {
 
-            if (zuVeraenderndesSpielbrett[zeile][spalte] == Farbe.LEER)
+            if (this.spielbrett[zeile][spalte] == Farbe.LEER)
                 break;
 
-            if (zuVeraenderndesSpielbrett[zeile][spalte] == zugFarbe) {
+            if (this.spielbrett[zeile][spalte] == zugFarbe) {
 
                 for (int i = input.getZeile(), j = input.getSpalte(); i <= zeile && j >= spalte; i++, j--) {
-                    zuVeraenderndesSpielbrett[i][j] = zugFarbe;
+                    this.spielbrett[i][j] = zugFarbe;
                 }
 
                 break;
@@ -397,13 +416,13 @@ public class Spielbrett {
         //Diagonal nach oben links
         for (int zeile = input.getZeile() - 1, spalte = input.getSpalte() - 1; zeile >= 0 && spalte >= 0; zeile--, spalte--) {
 
-            if (zuVeraenderndesSpielbrett[zeile][spalte] == Farbe.LEER)
+            if (this.spielbrett[zeile][spalte] == Farbe.LEER)
                 break;
 
-            if (zuVeraenderndesSpielbrett[zeile][spalte] == zugFarbe) {
+            if (this.spielbrett[zeile][spalte] == zugFarbe) {
 
                 for (int i = input.getZeile(), j = input.getSpalte(); i >= zeile && j >= spalte; i--, j--) {
-                    zuVeraenderndesSpielbrett[i][j] = zugFarbe;
+                    this.spielbrett[i][j] = zugFarbe;
                 }
 
                 break;
@@ -414,18 +433,19 @@ public class Spielbrett {
         //Diagonal nach oben rechts
         for (int zeile = input.getZeile() - 1, spalte = input.getSpalte() + 1; zeile >= 0 && spalte < 8; zeile--, spalte++) {
 
-            if (zuVeraenderndesSpielbrett[zeile][spalte] == Farbe.LEER)
+            if (this.spielbrett[zeile][spalte] == Farbe.LEER)
                 break;
 
-            if (zuVeraenderndesSpielbrett[zeile][spalte] == zugFarbe) {
+            if (this.spielbrett[zeile][spalte] == zugFarbe) {
 
                 for (int i = input.getZeile(), j = input.getSpalte(); i >= 0 && j <= spalte; i--, j++) {
-                    zuVeraenderndesSpielbrett[i][j] = zugFarbe;
+                    this.spielbrett[i][j] = zugFarbe;
                 }
 
                 break;
             }
 
         }
+
     }
 }

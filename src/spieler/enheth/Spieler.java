@@ -14,7 +14,7 @@ public class Spieler implements OthelloSpieler {
     private Spielbrett brett;
     private Farbe eigeneFarbe;
     private Farbe gegnerischeFarbe;
-    private int tiefe = 6;
+    private int tiefe = 8;
     private Zug besterZug;
 
     //Standardkonstruktor
@@ -24,6 +24,7 @@ public class Spieler implements OthelloSpieler {
 
     //Optionaler Konstruktor
     Spieler(int suchtiefe) {
+        this.tiefe = suchtiefe;
     }
 
     @Override
@@ -59,6 +60,7 @@ public class Spieler implements OthelloSpieler {
         //Eigene Farbe festlegen
         this.eigeneFarbe = farbe;
 
+        //In Abhängigkeit zu der eigenen Farbe, wird das Attribut 'gegnerischeFarbe' festgelegt
         if (farbe == Farbe.SCHWARZ) {
             gegnerischeFarbe = Farbe.WEISS;
         } else {
@@ -67,34 +69,6 @@ public class Spieler implements OthelloSpieler {
 
     }
 
-//    private int miniMax(Farbe zugFarbe, int tiefe, int alpha, int beta){
-//
-//        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(zugFarbe).size() == 0)
-//            return this.brett.brettBewerten(zugFarbe);
-//
-//        Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
-//
-//        int maxWert = alpha;
-//        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(zugFarbe);
-//
-//        for(Zug zug : zugListe){
-//            this.brett.zugAusfuehren(zug,zugFarbe);
-//            int wert = -1 * miniMax(Spielbrett.gegenteilFarbe(zugFarbe),tiefe-1,-1 * beta,-1 * maxWert);
-//            this.brett = aktuellesBrett.kopieBereitstellen();
-//
-//            if(wert > maxWert){
-//                maxWert = wert;
-//
-//                if(tiefe == this.tiefe)
-//                    besterZug = zug;
-//
-//                if(maxWert >= beta)
-//                    break;
-//            }
-//        }
-//
-//        return maxWert;
-//    }
 
     private int max(int tiefe, int alpha, int beta){
         if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(this.eigeneFarbe).size() == 0)
@@ -147,48 +121,6 @@ public class Spieler implements OthelloSpieler {
         return minWert;
     }
 
-
-//    private int alphabetaTest(Farbe zugFarbe, int tiefe, int alpha, int beta){
-//        if(tiefe == 0 || this.brett.sucheAlleMoeglichenZuge(zugFarbe).size() == 0)
-//            return this.brett.brettBewerten(zugFarbe);
-//
-//        Spielbrett aktuellesBrett = this.brett.kopieBereitstellen();
-//        ArrayList<Zug> zugListe = this.brett.sucheAlleMoeglichenZuge(zugFarbe);
-//
-//        if(zugFarbe == this.eigeneFarbe){
-//            int maxWert = Integer.MIN_VALUE;
-//            for(Zug zug : zugListe){
-//                this.brett.zugAusfuehren(zug,zugFarbe);
-//                int wert = alphabetaTest(Spielbrett.gegenteilFarbe(zugFarbe), tiefe - 1, alpha, beta);
-//                this.brett = aktuellesBrett.kopieBereitstellen();
-//
-//                if(wert > maxWert){
-//                    maxWert = wert;
-//                    if(tiefe == this.tiefe)
-//                        besterZug = zug;
-//                }
-//
-//                alpha = Math.max(alpha, maxWert);
-////                if(beta <= alpha)
-////                    break;
-//            }
-//            return maxWert;
-//        } else {
-//            int minWert = Integer.MAX_VALUE;
-//            for(Zug zug : zugListe){
-//
-//                this.brett.zugAusfuehren(zug,zugFarbe);
-//                int wert = alphabetaTest(Spielbrett.gegenteilFarbe(zugFarbe), tiefe - 1, alpha, beta);
-//                this.brett = aktuellesBrett.kopieBereitstellen();
-//
-//                minWert = Math.min(minWert, wert);
-//                beta = Math.min(beta, minWert);
-////                if(beta <= alpha)
-////                    break;
-//            }
-//            return minWert;
-//        }
-//    }
 
     @Override
     public String meinName() {
