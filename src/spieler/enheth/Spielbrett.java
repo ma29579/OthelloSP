@@ -138,29 +138,29 @@ public class Spielbrett {
      * @return true, falls der Zug durchführbar ist, andernfalls false
      */
     private boolean zugErlaubt(Farbe zugFarbe, int zeile, int spalte){
-        boolean spielsteinFremdeFarbe = false;
+        boolean spielsteinFremdeFarbe = false; //Variable um Abzuspeichern, dass mindestens ein gegnerischer Stein auf dem Weg liegt
 
-        if (spielbrett[zeile][spalte] != Farbe.LEER)
+        if (spielbrett[zeile][spalte] != Farbe.LEER) //wenn das Feld bereits belegt ist, kann hier kein Zug stattfinden
             return false;
 
         //Überprüfung, horizontal rechts
-        for (int j = spalte + 1; j < 8 && spielbrett[zeile][j] != Farbe.LEER; j++) {
-            if (spielbrett[zeile][j] != zugFarbe)
+        for (int j = spalte + 1; j < 8 && spielbrett[zeile][j] != Farbe.LEER; j++) { //Iteriere über Zeile bis Spielfeldende und solange das Feld nicht leer ist
+            if (spielbrett[zeile][j] != zugFarbe) //Wenn ein Gegnerstein auf dem Weg, Variable setzen
                 spielsteinFremdeFarbe = true;
 
-            if (spielbrett[zeile][j] == zugFarbe) {
-                if (spielsteinFremdeFarbe)
-                    return true;
+            if (spielbrett[zeile][j] == zugFarbe) { //Wenn ein eigener Stein erreicht wird
+                if (spielsteinFremdeFarbe)          //und bereits ein Gegnerstein auf dem Weg lag
+                    return true;                    //dann ist der Zug erlaubt
                 else
-                    break;
+                    break;                          //wenn kein Gegnerstein auf dem Weg lag, ist er verboten
             }
 
         }
 
-        spielsteinFremdeFarbe = false;
+        spielsteinFremdeFarbe = false; //Variable zurücksetzen
 
         //Überprüfung, horizontal links
-        for (int j = spalte - 1; j >= 0 && spielbrett[zeile][j] != Farbe.LEER; j--) {
+        for (int j = spalte - 1; j >= 0 && spielbrett[zeile][j] != Farbe.LEER; j--) { //Gleicher Ablauf, wie in erster Schleife nur in anderer Richtung
             if (spielbrett[zeile][j] != zugFarbe)
                 spielsteinFremdeFarbe = true;
 
@@ -309,27 +309,27 @@ public class Spielbrett {
      */
     public void zugAusfuehren(Zug input, Farbe zugFarbe) {
 
-        this.spielbrett[input.getZeile()][input.getSpalte()] = zugFarbe;
+        this.spielbrett[input.getZeile()][input.getSpalte()] = zugFarbe; //Stein an Position setzen
 
         //vertikal nach unten
-        for (int zeile = input.getZeile() + 1; zeile < 8; zeile++) {
+        for (int zeile = input.getZeile() + 1; zeile < 8; zeile++) { //Feldspalte nach unten durchgehen bis zum Ende durchgehen
 
-            if (this.spielbrett[zeile][input.getSpalte()] == Farbe.LEER)
+            if (this.spielbrett[zeile][input.getSpalte()] == Farbe.LEER) //Wenn ein leeres Feld kommt abbrechen
                 break;
 
-            if (this.spielbrett[zeile][input.getSpalte()] == zugFarbe) {
+            if (this.spielbrett[zeile][input.getSpalte()] == zugFarbe) { //Wenn ein Feld mit dem eigenen Stein besetzt ist, müssen alle Steine dazwischen nun auch zu eigenen werden
 
-                for (int i = input.getZeile(); i <= zeile; i++) {
-                    this.spielbrett[i][input.getSpalte()] = zugFarbe;
+                for (int i = input.getZeile(); i <= zeile; i++) {       //Vom neu gesetzten Stein bis zu diesem Stein iterieren
+                    this.spielbrett[i][input.getSpalte()] = zugFarbe;   //und dort alle Steine auf die eigene Farbe setzen
                 }
 
-                break;
+                break; //Vorgang in diese Richtung fertig
 
             }
         }
 
         //vertikal nach oben
-        for (int zeile = input.getZeile() - 1; zeile >= 0; zeile--) {
+        for (int zeile = input.getZeile() - 1; zeile >= 0; zeile--) { //Gleicher Ablauf, wie in erster Schleife nur in anderer Richtung
 
             if (this.spielbrett[zeile][input.getSpalte()] == Farbe.LEER)
                 break;
