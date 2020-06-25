@@ -14,15 +14,16 @@ public class Spieler implements OthelloSpieler {
     private Spielbrett brett;
     private Farbe eigeneFarbe;
     private Farbe gegnerischeFarbe;
-    private int tiefe = 8;
+    private int tiefe;
     private Zug besterZug;
 
     //Standardkonstruktor
-    Spieler() {
+    public Spieler() {
+        this.tiefe = 8;
     }
 
     //Optionaler Konstruktor
-    Spieler(int suchtiefe) {
+    public Spieler(int suchtiefe) {
         this.tiefe = suchtiefe;
     }
 
