@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="OthelloWettkampf">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/Lib/OthelloWettkampf.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../OthelloWettkampf.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

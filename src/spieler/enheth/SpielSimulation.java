@@ -11,11 +11,11 @@ public class SpielSimulation {
 
     public static void main(String[] args) {
 
-        ArrayList<OthelloSpieler> spieler = new ArrayList<>();
-        spieler.add(new Spieler());
-        spieler.add(new Referenzspieler(6));
+        ArrayList<String> spieler = new ArrayList<>();
+        spieler.add("spieler.Referenzspieler:6");
+        //spieler.add("spieler.enheth.Spieler:");
 
-        new OthelloArena(150, spieler, true);
+        new OthelloArena(150, spieler, "spiel.txt",false);
     }
 
 }

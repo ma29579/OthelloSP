@@ -18,7 +18,6 @@ public class Spieler implements OthelloSpieler {
     private Zug besterZug;
 
     //Standardkonstruktor
-    
     Spieler() {
     }
 
@@ -40,7 +39,7 @@ public class Spieler implements OthelloSpieler {
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
 
-        if (zug != null && !zug.getPassen()) {
+        if (zug != null && !zug.isPassen()) {
             //Durchführung des erhaltenen gegnerischen Spielzugs
             brett.zugAusfuehren(zug, gegnerischeFarbe);
         }
@@ -54,7 +53,7 @@ public class Spieler implements OthelloSpieler {
             return besterZug;
         } else {
             besterZug = new Zug(1,1);
-            besterZug.setPassen();
+            besterZug = Zug.passenZug();
             return besterZug;
         }
     }
@@ -65,6 +64,10 @@ public class Spieler implements OthelloSpieler {
      * @param i Bedenkzeit in Sekunden
      */
     @Override
+    /**
+     * Initialisiert ein neues Objekt der Spielbrettk-Klasse für das Attribut 'brett'
+     * und legt anhand des erhaltenen Parameters die eigene und die gegnersiche Spielfarbe fest.
+     */
     public void neuesSpiel(Farbe farbe, int i) {
 
         //Spielbrett anlegen
