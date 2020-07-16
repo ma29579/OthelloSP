@@ -19,7 +19,7 @@ public class Spieler implements OthelloSpieler {
 
     //Standardkonstruktor
     public Spieler() {
-        this.tiefe = 8;
+        this.tiefe = 10;
     }
 
     //Optionaler Konstruktor

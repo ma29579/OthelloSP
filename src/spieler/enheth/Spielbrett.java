@@ -86,8 +86,10 @@ public class Spielbrett {
             }
         }
 
-        //Die gefundenen Züge werden in einer ausgewählten Sortierung in die Ergebnis-ArrayList-Instanz eingeführt
+        //Die gefundenen Züge werden sortiert und dann in einer ausgewählten Sortierung in die Ergebnis-ArrayList-Instanz eingeführt
         //Zunächst folgen die besten Züge, ehe die schlechtesten Züge zu letzt kommen
+        guteZuege.sort((Zug a, Zug b) ->  bewertungsmatrix[b.getZeile()][b.getSpalte()] - bewertungsmatrix[a.getZeile()][a.getSpalte()]);
+        schlechteZuege.sort((Zug a, Zug b) ->  bewertungsmatrix[b.getZeile()][b.getSpalte()] - bewertungsmatrix[a.getZeile()][a.getSpalte()]);
         moeglicheZuege.addAll(guteZuege);
         moeglicheZuege.addAll(geringBewerteteZuege);
         moeglicheZuege.addAll(schlechteZuege);
